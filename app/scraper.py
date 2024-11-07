@@ -89,11 +89,11 @@ class LinkedInScraper:
         return posts
 
 
-if __name__ == "__main__":
-    username = os.getenv("LINKEDIN_USERNAME")
-    password = os.getenv("LINKEDIN_PASSWORD")
-    profile_url = "https://www.linkedin.com/in/aniket-bajpai"
+# if __name__ == "__main__":
+#     username = os.getenv("LINKEDIN_USERNAME")
+#     password = os.getenv("LINKEDIN_PASSWORD")
+#     profile_url = "https://www.linkedin.com/in/aniket-bajpai"
 
-    scraper = LinkedInScraper(username, password)
-    data = scraper.get_profile_data(profile_url)
-    print(data)
+#     scraper = LinkedInScraper(username, password)
+#     data = scraper.get_profile_data(profile_url)
+#     print(data)
