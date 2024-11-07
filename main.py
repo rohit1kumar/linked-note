@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 from log import logger
@@ -14,6 +14,11 @@ class ProfileRequest(BaseModel):
     username: str
     password: str
     profile_url: str
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
 @app.route("/create_message", methods=["POST"])

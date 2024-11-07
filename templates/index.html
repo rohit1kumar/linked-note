@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Profile Message Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        .results {
+            margin-top: 20px;
+            /* keep it headen */
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading img {
+            width: 40px;
+            height: 40px;
+            animation: rotate 1s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>LinkedIn Profile Message Generator</h1>
+    <form id="profileForm">
+        <div class="form-group">
+            <label for="username">LinkedIn Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">LinkedIn Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="profile_url">Profile URL</label>
+            <input type="text" id="profile_url" name="profile_url" required>
+        </div>
+        <button type="button" onclick="generateMessage()">Generate Message</button>
+    </form>
+
+    <div class="results" id="results">
+        <h2>Results</h2>
+        <div id="welcomeMessage"></div>
+        <div id="lastPosts"></div>
+        <div id="profileInfo"></div>
+    </div>
+
+    <div class="loading" id="loading">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="Loading...">
+        <p>Loading...</p>
+    </div>
+
+    <script>
+        function generateMessage() {
+            const form = document.getElementById("profileForm");
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Show the loading indicator
+            document.getElementById("loading").style.display = "block";
+
+            fetch("/create_message", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide the loading indicator
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("results").style.display = "block";
+                    if (data.connection_message) {
+                        document.getElementById("welcomeMessage").innerHTML = `<strong>Welcome Message:</strong> ${data.connection_message}`;
+                        document.getElementById("lastPosts").innerHTML = `<strong>Last 5 Posts:</strong><ul>` +
+                            data.profile_data.posts.map(post => `<li>${post}</li>`).join('') + `</ul>`;
+                        document.getElementById("profileInfo").innerHTML = `
+                        <strong>Parameters:</strong><br>
+                        <strong>Name:</strong> ${data.profile_data.name}<br>
+                        <strong>Headline:</strong> ${data.profile_data.headline}<br>`;
+                    } else {
+                        document.getElementById("results").innerHTML = `<strong>Error:</strong> ${data.details}`;
+                    }
+                })
+                .catch(error => {
+                    // Hide the loading indicator
+                    document.getElementById("loading").style.display = "none";
+                    document.getElementById("results").innerHTML = `<strong>Error:</strong> Unable to fetch data`;
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+
+</html>
