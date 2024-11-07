@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from scrapper import LinkedInScraper
@@ -34,6 +34,4 @@ def create_connection_message(request: ProfileRequest):
         }
     except Exception as e:
         logger.error(f"Error analyzing profile: {str(e)}")
-        return {
-            "error": "Failed to analyze profile"
-        }, status.HTTP_500_INTERNAL_SERVER_ERROR
+        raise HTTPException(status_code=500, detail="Failed to analyze profile")
