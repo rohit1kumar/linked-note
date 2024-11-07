@@ -16,4 +16,5 @@ ENV FLASK_ENV=production
 
 EXPOSE 5000
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "main:app"]
+# CMD ["gunicorn", "-b", "0.0.0.0:5000", "main:app"]
+CMD ["python", "main.py"]
