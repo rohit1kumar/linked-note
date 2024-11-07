@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
-from log import logger
-from scrapper import LinkedInScraper
-from ai import LinkedInMessageGenerator
+from scraper import LinkedInScraper
+from message_generator import LinkedInMessageGenerator
 
 load_dotenv()
 
@@ -26,16 +25,13 @@ def create_connection_message():
     try:
         data = request.get_json()
         profile_request = ProfileRequest(**data)
+        app.logger.info(f"Request: {profile_request.dict()}")
 
-        scrapper = LinkedInScraper()
-        ai = LinkedInMessageGenerator()
+        scrapper = LinkedInScraper(profile_request.username, profile_request.password)
+        message_generator = LinkedInMessageGenerator()
 
-        profile_data = scrapper.get_profile_data(
-            profile_request.username,
-            profile_request.password,
-            profile_request.profile_url,
-        )
-        message = ai.generate_connection_message(profile_data)
+        profile_data = scrapper.get_profile_data(profile_request.profile_url)
+        message = message_generator.generate_connection_message(profile_data)
 
         response = {
             "connection_message": message,
@@ -45,7 +41,7 @@ def create_connection_message():
     except ValidationError as e:
         return jsonify({"details": e.errors()}), 400
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
+        app.logger.error(f"Error creating connection message: {str(e)}")
         return jsonify({"details": "Internal server error"}), 500
 
 

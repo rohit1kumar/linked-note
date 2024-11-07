@@ -33,6 +33,7 @@ class LinkedInMessageGenerator:
             model=os.getenv("OPENAI_MODEL") or "gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
         )
+        logger.info("AI response generated")
         return response.choices[0].message.content
 
     def generate_connection_message(self, profile_data):
