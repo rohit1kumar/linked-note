@@ -31,12 +31,12 @@ def create_connection_message():
             profile_request.profile_url,
         )
         message = ai.generate_connection_message(profile_data)
-        return jsonify(
-            {
-                "connection_message": message,
-                "profile_data": profile_data,
-            }
-        )
+
+        response = {
+            "connection_message": message,
+            "profile_data": profile_data,
+        }
+        return jsonify(response)
     except ValidationError as e:
         return jsonify({"details": e.errors()}), 400
     except Exception as e:
