@@ -58,8 +58,8 @@
 Under following assumptions:
 
 - Model: `gpt-4o-mini`
-- Each post container contains 400 tokens
-- Each prompt + user details costs 60 extra tokens
+- Each post contains 400 tokens
+- Each instruction prompt + user details costs 60 extra tokens
 - The average message output is 50 tokens
 
 Then the input token would be:
