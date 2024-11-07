@@ -8,7 +8,7 @@ load_dotenv()
 class LinkedInScraper:
     def get_profile_data(self, username: str, password: str, profile_url: str):
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             page = browser.new_page()
 
             try:
