@@ -14,7 +14,7 @@ class LinkedInScraper:
 
     def get_profile_data(self, profile_url: str) -> dict:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
+            browser = p.chromium.launch(headless=True)
             self.page = browser.new_page()
 
             try:
