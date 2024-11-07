@@ -24,6 +24,8 @@
    python app/main.py
    ```
 
+4. Go to `http://localhost:5000` in your browser for using UI or use the API directly.
+
 ### API Request & Response:
 
 - Request:
@@ -61,6 +63,7 @@ Under following assumptions:
 - The average message output is 50 tokens
 
 Then the input token would be:
+
 - `400 * 5 + 60 + 50 = 2110 tokens`
 
 According to [gptforwork.com](https://gptforwork.com/tools/openai-chatgpt-api-pricing-calculator), for my case the price per API call is $0.0003.
