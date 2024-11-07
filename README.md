@@ -76,3 +76,6 @@ For running 30 days with 5 calls per day (150 calls total), the total cost would
 
 - Adding Cache for Scraped data, to avoid getting blocked by LinkedIn and improve the speed as post data doesn't change frequently (implented)
 - Using Task Queue like celery to scrape data in background and return the response immediately and using polling to get the message (not implemented)
+
+### Credits
+Used Claude for generating UI and refactoring the code, ChatGPT for fixing bugs.
