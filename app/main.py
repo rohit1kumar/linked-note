@@ -31,8 +31,12 @@ def create_connection_message():
         message_generator = LinkedInMessageGenerator()
 
         profile_data = scrapper.get_profile_data(profile_request.profile_url)
-        message = message_generator.generate_connection_message(profile_data)
 
+        if not profile_data:
+            return jsonify({"details": "Not able to scrape profile"}), 500
+
+        message = message_generator.generate_connection_message(profile_data)
+    
         response = {
             "connection_message": message,
             "profile_data": profile_data,

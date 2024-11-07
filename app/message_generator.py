@@ -37,9 +37,5 @@ class LinkedInMessageGenerator:
         return response.choices[0].message.content
 
     def generate_connection_message(self, profile_data):
-        try:
-            prompt = self._create_prompt(profile_data)
-            return self._create_ai_response(prompt)
-        except Exception as e:
-            logger.error(f"Error generating message: {str(e)}")
-            return "Failed to generate connection message"
+        prompt = self._create_prompt(profile_data)
+        return self._create_ai_response(prompt)
