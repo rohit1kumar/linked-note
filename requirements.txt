@@ -1,2 +1,4 @@
 python-dotenv==1.0.1
 fastapi[standard]
+openai==1.54.3
+playwright==1.48.0
