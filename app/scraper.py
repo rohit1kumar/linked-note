@@ -37,6 +37,7 @@ class LinkedInScraper:
         self.page.click('button[type="submit"]')
         self.page.wait_for_load_state("domcontentloaded")
 
+        # After login LindkedIn redirects to /feed page
         if "feed" not in self.page.url:
             logger.error("Login failed")
             raise Exception("Login failed")
