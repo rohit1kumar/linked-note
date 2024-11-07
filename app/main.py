@@ -1,12 +1,17 @@
+import os
+import json
+import redis
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
 from pydantic import BaseModel, ValidationError
-from dotenv import load_dotenv
 from scraper import LinkedInScraper
 from message_generator import LinkedInMessageGenerator
 
 load_dotenv()
 
 app = Flask(__name__)
+
+cache = redis.from_url(os.getenv("REDIS_URL"))
 
 
 class ProfileRequest(BaseModel):
@@ -27,16 +32,30 @@ def create_connection_message():
         profile_request = ProfileRequest(**data)
         app.logger.info(f"Request: {profile_request.dict()}")
 
-        scrapper = LinkedInScraper(profile_request.username, profile_request.password)
+        # Use Redis cache for storing scraped data
+        cache_key = f"profile_data_{profile_request.profile_url}"
+        cached_profile_data = cache.get(cache_key)
+
+        if cached_profile_data:
+            app.logger.info("Cache hit")
+            profile_data = json.loads(cached_profile_data.decode("utf-8"))
+        else:
+            scrapper = LinkedInScraper(
+                profile_request.username,
+                profile_request.password,
+            )
+            profile_data = scrapper.get_profile_data(profile_request.profile_url)
+
+            if not profile_data:
+                return jsonify({"details": "Not able to scrape profile"}), 500
+
+            # Cache the scraped profile data
+            cache.set(cache_key, profile_data)
+            cache.expire(cache_key, 86400)  # Expire in 24 hours
+
         message_generator = LinkedInMessageGenerator()
-
-        profile_data = scrapper.get_profile_data(profile_request.profile_url)
-
-        if not profile_data:
-            return jsonify({"details": "Not able to scrape profile"}), 500
-
         message = message_generator.generate_connection_message(profile_data)
-    
+
         response = {
             "connection_message": message,
             "profile_data": profile_data,
@@ -45,6 +64,7 @@ def create_connection_message():
     except ValidationError as e:
         return jsonify({"details": e.errors()}), 400
     except Exception as e:
+        print(e)
         app.logger.error(f"Error creating connection message: {str(e)}")
         return jsonify({"details": "Internal server error"}), 500
 
