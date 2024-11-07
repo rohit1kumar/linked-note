@@ -1,4 +1,3 @@
-import os
 from log import logger
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
@@ -6,7 +5,7 @@ from playwright.sync_api import sync_playwright
 load_dotenv()
 
 
-class LinkedInScraper():
+class LinkedInScraper:
     def get_profile_data(self, username: str, password: str, profile_url: str):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=False)
@@ -75,7 +74,11 @@ class LinkedInScraper():
             except Exception as e:
                 print(e)
                 # logger.error(f"Error scraping profile: {str(e)}")
-                return e
+                return {
+                    "name": "Failed to fetch",
+                    "headline": "Failed to fetch",
+                    "posts": [],
+                }
             finally:
                 browser.close()
 
