@@ -1,4 +1,5 @@
-# LinkedIn Connections Message Generator
+# LinkedNote
+## Generate personalized AI LinkedIn connection notes within seconds.
 
 ### How to use:
 
