@@ -6,11 +6,12 @@ from flask import Flask, request, jsonify, render_template
 from pydantic import BaseModel, ValidationError
 from scraper import LinkedInScraper
 from message_generator import LinkedInMessageGenerator
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
-
+CORS(app)
 cache = redis.from_url(os.getenv("REDIS_URL"))
 
 
